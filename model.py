@@ -8,6 +8,8 @@ import fitz  # PyMuPDF
 from PIL import Image
 from pdf2image import convert_from_path
 
+import os
+
 # Data processing
 import pandas as pd
 from torch.utils.data import random_split
@@ -60,30 +62,18 @@ def convert_pdf_to_images(pdf_path):
 
     return image_arrays
 
-# def convert_pdf_to_np(pdf_path):
-#     doc = fitz.open(pdf_path)
+def convert_pdf_to_numpy(pdf_path):
+    image_array = convert_pdf_to_images(pdf_path)
+    np_array = np.array(image_array)
+    return np_array
 
-#     for page_number in range(len(doc)):
-#         # Extract images
-#         for img_index, img in enumerate(doc.get_page_images(page_number)):
-#             xref = img[0]
-#             base_image = doc.extract_image(xref)
-#             image_bytes = base_image["image"]
+pdf = np.array
+pdfs_path = "data/pdf"
 
-#             # Convert to PIL Image
-#             image = Image.open(io.BytesIO(image_bytes))
-
-#             # Convert to NumPy array
-#             np_array = np.array(image)
-
-#             # For simplicity, return the first image as NumPy array
-#             return np_array
-
-#     # Close the document
-#     doc.close()
-
-img_1 = convert_pdf_to_images("data/pdf/1.pdf")
-print(img_1)
+for p in os.listdir(pdfs_path):
+    p = os.path.join(pdfs_path, p)
+    new_pdf = convert_pdf_to_numpy(p)
+    np.append(pdf, new_pdf)
 
 class Model(nn.Module):
     def __init__(self):
